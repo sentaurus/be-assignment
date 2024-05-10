@@ -1,57 +1,107 @@
-# Take home assignment
+# BE Assignment
 
+Complete test BE Assignment
 
-## Description:
-Build 2 Backend services which manages user’s accounts and transactions (send/withdraw). 
+### User API Reference
 
-In Account Manager service, we have:
-- User: Login with Id/Password
-- Payment Account: One user can have multiple accounts like credit, debit, loan...
-- Payment History: Records of transactions
+#### User Login
 
-In Payment Manager service, we have:
-- Transaction: Include basic information like amount, timestamp, toAddress, status...
-- We have a core transaction process function, that will be executed by `/send` or `/withdraw` API:
-
-```js
-function processTransaction(transaction) {
-    return new Promise((resolve, reject) => {
-        console.log('Transaction processing started for:', transaction);
-
-        // Simulate long running process
-        setTimeout(() => {
-            // After 30 seconds, we assume the transaction is processed successfully
-            console.log('transaction processed for:', transaction);
-            resolve(transaction);
-        }, 30000); // 30 seconds
-    });
-}
-
-// Example usage
-let transaction = { amount: 100, currency: 'USD' }; // Sample transaction input
-processTransaction(transaction)
-    .then((processedTransaction) => {
-        console.log('transaction processing completed for:', processedTransaction);
-    })
-    .catch((error) => {
-        console.error('transaction processing failed:', error);
-    });
+```http
+  POST /user/login
 ```
 
-Features:
-- Users need to register/log in and then be able to call APIs.
-- APIs for 2 operations send/withdraw. Account statements will be updated after the transaction is successful.
-- APIs to retrieve all accounts and transactions per account of the user.
-- Write Swagger docs for implemented APIs (Optional)
+| Body       | Type     | Description                 |
+| :--------- | :------- | :-------------------------- |
+| `email`    | `string` | **Required**. Your email    |
+| `password` | `string` | **Required**. Your password |
 
-### Tech-stack:
-- Recommend using authentication 3rd party: Supertokens, Supabase...
-- `NodeJs/Golang` for API server (`Fastify/Gin` framework is the best choices)
-- `PostgreSQL/MongoDB` for Database. Recommend using `Prisma` for ORM.
-- `Docker` for containerization. Recommend using `docker-compose` for running containers.
- 
-## Target:
-- Good document/README to describe your implementation.
-- Make sure app functionality works as expected. Run and test it well.
-- Containerized and run the app using Docker.
-- Using `docker-compose` or any automation script to run the app with single command is a plus.
+#### User Logout
+
+```http
+  POST /user/logout
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+#### User Register
+
+```http
+  POST /user/logout
+```
+
+| Body       | Type     | Description                 |
+| :--------- | :------- | :-------------------------- |
+| `email`    | `string` | **Required**. Your email    |
+| `password` | `string` | **Required**. Your password |
+
+### Account API Reference
+
+#### Account Create
+
+```http
+  POST /account/create
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+| Body          | Type     | Description                      |
+| :------------ | :------- | :------------------------------- |
+| `accountType` | `string` | **Required**. Your Account Type  |
+| `balance`     | `number` | **Required**. Your input balance |
+
+#### Account Read
+
+```http
+  POST /account/read
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+### Transaction API Reference
+
+#### Transaction Read
+
+```http
+  GET /transaction/read
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+#### Transaction Send
+
+```http
+  POST /transaction/send
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+| Body        | Type     | Description                                    |
+| :---------- | :------- | :--------------------------------------------- |
+| `amount`    | `number` | **Required**. Your input amount                |
+| `toAddress` | `number` | **Required**. Your input destination account   |
+| `accountId` | `number` | **Required**. Your input account usage to send |
+
+#### Transaction Withdraw
+
+```http
+  POST /transaction/withdraw
+```
+
+| Header          | Type     | Description              |
+| :-------------- | :------- | :----------------------- |
+| `authorization` | `string` | **Required**. Bearer ... |
+
+| Body        | Type     | Description                                        |
+| :---------- | :------- | :------------------------------------------------- |
+| `amount`    | `number` | **Required**. Your input amount                    |
+| `accountId` | `number` | **Required**. Your input account usage to withdraw |
